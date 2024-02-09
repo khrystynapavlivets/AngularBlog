@@ -29,10 +29,13 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
+            "styles": [ 
+                 "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -102,5 +105,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "970ca8e5-62ff-499d-8d08-458201db9738"
   }
 }

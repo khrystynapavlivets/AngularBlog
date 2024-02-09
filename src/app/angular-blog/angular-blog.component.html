@@ -1,0 +1,165 @@
+<nav class="navbar navbar-expand-lg  bg-dark ">
+    <div class="container-fluid py-2 px-4">
+        <a class="navbar-brand text-light fs-2">Angular Blog</a>
+        <form class=" justify-content-end">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                @if ( !isChangeBtn) {
+                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    type="button">Sign In</button>
+                <button class="btn btn-outline-primary"   data-bs-toggle="modal" data-bs-target="#signUp"
+                    type="button">Sign Up</button>
+                }
+                @if (isChangeBtn) {
+                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addPost"
+                    type="button">Post add</button>
+                <div class="bg-warning text-dark px-3 pt-2">{{this.username}}</div>
+                <button class="btn btn-outline-warning" (click)="signOut()" type="button">Sign Out</button>
+                }
+            </div>
+        </form>
+    </div>
+</nav>
+
+
+<div class="modal fade " id="staticBackdrop"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Sign In</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating">
+                    <input type="email" [(ngModel)]="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com" required>
+                    <label for="floatingInput">Email address</label>
+
+                </div>
+
+                <div class="form-floating mt-3">
+                    <input type="password" [(ngModel)]="password" class="form-control" id="floatingPassword"
+                        placeholder="Password" required>
+                    <label for="floatingPassword">Password</label>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success"  data-bs-dismiss="modal">Close</button>
+
+                <button type="button" (click)="submitUser()" [disabled]="isClosed" class="btn btn-primary"
+                    data-bs-dismiss="modal" data-bs-target="#exampleModal">Submit</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade " id="signUp" data-bs-backdrop="static"  data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Sign Up</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" [(ngModel)]="username" class="form-control" id="floatingInput"
+                        placeholder="Username" required="">
+                    <label for="floatingInput">Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" [(ngModel)]="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com" required="">
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" [(ngModel)]="password" class="form-control" id="floatingPassword"
+                        placeholder="Password" required>
+                    <label for="floatingPassword">Password</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success"  data-bs-dismiss="modal">Close</button>
+                <button type="button" (click)="submitNewUser()" [disabled]="isClosed" class="btn btn-primary"
+                    data-bs-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@for ( post of posts; track $index) {
+<div class="w-75  mx-auto p-3  rounded  mt-3 mx-auto h-auto border  border-secondary-subtle visible">
+    <h3>{{post.topic}}</h3>
+    <div class=" d-flex justify-content-between">
+        <p class="text-black-50 mb-1 fw-semibold text-opacity-50">Posted by: {{post.postedBy}}</p>
+        <span class="text-dark text-opacity-50" style="font-size: .85rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" fill="currentColor" class="bi bi-clock mb-1"
+                viewBox="0 0 16 16">
+                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0" />
+            </svg>
+            {{post.date | date:'HH:mm, dd.MM.YYYY'}}</span>
+    </div>
+
+    <p class="text-dark  fw-medium text-opacity-75">{{post.message}}</p>
+    <div class=" d-flex justify-content-end">
+
+        @if (currentUserIsAuthorOrAdmin(post)) {
+        <div class="btn-group" role="group">
+            @if (isUserAdmin) {
+            <button type="button" (click)="editPost(post)" class="btn btn-warning" data-bs-toggle="modal"
+                data-bs-target="#addPost">Edit</button>
+            <button type="button" [disabled]="editStatus" (click)="deletePost(post)"
+                class="btn btn-danger">Delete</button>
+            }
+
+        </div>
+        }
+    </div>
+</div>
+}
+
+
+<div class="modal fade" id="addPost" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add post</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <div class="mb-3">
+                        <label for="titleInput" class="form-label">Title</label>
+                        <input type="text" [(ngModel)]="title" class="form-control" id="titleInput" required="">
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <div class="mb-3">
+                        <label for="textInput" class="form-label">Text</label>
+                        <textarea class="form-control" [(ngModel)]="text" id="textInput" rows="4"
+                            required=""></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn  btn-secondary" data-bs-dismiss="modal">Close</button>
+                @if (!isEditPost) {
+                <button type="button" (click)="submitPost()" [disabled]="isClosed" class="btn btn-success"
+                    data-bs-dismiss="modal">Post</button>
+                }
+                @if (isEditPost) {
+                <button type="button" (click)="savePost()" class="btn btn-success" data-bs-dismiss="modal">Edit
+                    Post</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
